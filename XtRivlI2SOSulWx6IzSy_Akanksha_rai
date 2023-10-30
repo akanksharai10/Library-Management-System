@@ -1,0 +1,116 @@
+-- phpMyAdmin SQL Dump
+-- version 4.4.11
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Jan 12, 2016 at 10:47 PM
+-- Server version: 5.5.46-0ubuntu0.14.04.2
+-- PHP Version: 5.5.9-1ubuntu4.14
+-- drop database library
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `library`
+
+--
+CREATE DATABASE IF NOT EXISTS `library` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `library`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `books`
+--
+
+CREATE TABLE IF NOT EXISTS `books` (
+  `book_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `title` varchar(1000) NOT NULL,
+  `author` varchar(1000) NOT NULL,
+  `description` text NOT NULL,
+  `category_id` int(5) NOT NULL,
+  `added_by` int(11) NOT NULL,
+  `added_at_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `book_categories`
+--
+
+CREATE TABLE IF NOT EXISTS `book_categories` (
+  `id` int(5) NOT NULL,
+  `category` varchar(255) NOT NULL 
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+ALTER TABLE book_categories
+ADD CONSTRAINT 
+primary key (id);
+
+ALTER TABLE books
+ADD CONSTRAINT 
+FOREIGN KEY (category_id) REFERENCES book_categories(id)
+;
+--
+-- Table structure for table `book_issue`
+--
+
+CREATE TABLE IF NOT EXISTS `book_issue` (
+  `issue_id` int(11) NOT NULL primary key AUTO_INCREMENT,
+  `book_id` int(11) NOT NULL,
+  `available_status` tinyint(1) NOT NULL DEFAULT '1',
+  `added_at_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`book_id`) REFERENCES books(book_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `book_issue_log`
+--
+
+CREATE TABLE IF NOT EXISTS `book_issue_log` (
+  `id` int(16) NOT NULL primary key AUTO_INCREMENT ,
+  `book_issue_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `return_time` varchar(50) NOT NULL,
+  `time_stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`book_issue_id`) REFERENCES book_issue(issue_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- --------------------------------------------------------
+ALTER TABLE book_issue_log ADD COLUMN `Fine` int;
+--
+-- Table structure for table `students`
+--
+
+CREATE TABLE IF NOT EXISTS `students` (
+  `student_id` int(11) NOT NULL primary key AUTO_INCREMENT,
+  `first_name` varchar(512) NOT NULL,
+  `last_name` varchar(512) NOT NULL,
+  `category` int(1) NOT NULL,
+  `roll_num` varchar(15) NOT NULL,
+  `branch` varchar(15),
+  `year` int(5) NOT NULL,
+  `books_issued` int(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE book_issue_log
+ADD CONSTRAINT 
+FOREIGN KEY (student_id) REFERENCES students(student_id)
+;
+
+
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
