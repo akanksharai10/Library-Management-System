@@ -1,6 +1,6 @@
 # Library-Management-System
 
-## Create a Library Management System :
+Create a Library Management System
 
 ## Following are the expected outputs :
 
